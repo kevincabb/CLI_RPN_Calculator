@@ -1,17 +1,20 @@
+const { processCalculation, processInput } = require("../shared/calculator.service");
+const { CalcAppAction, CalcConstant } = require("../shared/enums");
+
 class Calculator {
   constructor() {
     this.userPrompt = require("prompt-sync")();
-    this.enums = require("./enums.js");
     this.operandStack = [];
-    this.operatorStack = [];
-    this.operatorSet = new Set(Object.values(this.enums.Operator));
-    this.processedInput = false;
-    this.endApp = false;
+    this.operatorQueue = [];
+    this.calculatedResult = false;
+    this.runApp = true;
   }
 
+  // Initializes Calculator
   initCalculator() {
     this.printTitle();
-    while (!this.endApp) {
+
+    while (this.runApp) {
       const input = this.userPrompt(">");
 
       if (!input.length) {
@@ -21,87 +24,55 @@ class Calculator {
 
       this.checkAction(input);
       this.evaluateInput(input);
+      this.calculation(this.operandStack, this.operatorQueue);
+      this.printInput(input);
     }
   }
 
+  // Check for EOF or Clear
   checkAction(input) {
-    const { End, Clear } = this.enums.CalcAppAction;
+    const { End, Clear } = CalcAppAction;
 
     if (input === End) {
-      this.endApp = true;
+      this.runApp = false;
       console.log("End of Calculation");
     }
 
     if (input === Clear) {
       this.operandStack = [];
-      this.operatorStack = [];
+      this.operatorQueue = [];
       this.result = undefined;
     }
   }
 
   evaluateInput(input) {
-    const inputsToProcess = input.trim().split(" ");
+    const processedInput = processInput(input);
+    const { processedOperands, processedOperators } = processedInput;
 
-    for (let input of inputsToProcess) {
-      if (isNaN(input)) {
-        this.operatorStack.push(input);
-      } else {
-        this.operandStack.push(input);
-      }
-      this.processCalculation();
-    }
-
-    if (this.processedInput) {
-      console.log(this.result);
-      this.processedInput = false;
+    // Update operand stack
+    if (this.operandStack.length) {
+      this.operandStack = this.operandStack.concat(processedOperands);
     } else {
-      console.log(input);
+      this.operandStack = processedOperands;
+    }
+
+    // Update operator queue
+    if (this.operatorQueue.length) {
+      this.operatorQueue = processedOperators.concat(this.operatorQueue);
+    } else {
+      this.operatorQueue = processedOperators;
     }
   }
 
-  processCalculation() {
-    const { MinOperandStackLength, MinOperatorStackLength } =
-      this.enums.CalcConstant;
+  calculation(operandStack, operatorQueue) {
+    const processedCalc = processCalculation(operandStack, operatorQueue);
 
-    while (
-      this.operandStack.length >= MinOperandStackLength &&
-      this.operatorStack.length >= MinOperatorStackLength
-    ) {
-      const operation = this.operatorStack.pop();
-
-      if (this.operatorSet.has(operation)) {
-        this.operatorCases(operation);
-      }
-    }
-  }
-
-  operatorCases(operation) {
-    const { Addition, Subtraction, Multiplication, Division } =
-      this.enums.Operator;
-    const numInputTwo = this.operandStack.pop();
-    const numInputOne = this.operandStack.pop();
-
-    switch (operation) {
-      case Addition:
-        this.result = Number(numInputOne) + Number(numInputTwo);
-        this.processedInput = true;
-        this.operandStack.push(this.result);
-        break;
-      case Subtraction:
-        this.result = Number(numInputOne) - Number(numInputTwo);
-        this.processedInput = true;
-        this.operandStack.push(this.result);
-        break;
-      case Multiplication:
-        this.result = Number(numInputOne) * Number(numInputTwo);
-        this.processedInput = true;
-        this.operandStack.push(this.result);
-        break;
-      case Division:
-        this.result = Number(numInputOne) / Number(numInputTwo);
-        this.processedInput = true;
-        this.operandStack.push(this.result);
-        break;
+    // Update state of calculator
+    if (processedCalc.validCalc) {
+      this.calculatedResult = processedCalc.validCalc;
+      this.result = processedCalc.result;
+      this.operandStack = processedCalc.operandStack;
+      this.operatorQueue = processedCalc.operatorQueue;
     }
   }
 
@@ -116,7 +87,16 @@ class Calculator {
     console.log(" CLEAR: Enter c \n EOF: Enter q");
     console.log(" \n Enter Values or Operators (+ - * /):");
   }
+
+  printInput(input) {
+    if (this.calculatedResult) {
+      this.calculatedResult = false;
+      console.log(this.result);
+    } else {
+      console.log(input);
+    }
+  }
 }
 
-const calc = new Calculator();
-calc.initCalculator();
+const rpnCalculator = new Calculator();
+rpnCalculator.initCalculator();
