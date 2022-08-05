@@ -5,7 +5,6 @@ exports.processCalculation = (operandStack, operatorQueue) => {
   const { MinOperandStackLength, MinOperatorQueueLength } = CalcConstant;
   const operatorSet = new Set(Object.values(Operator));
   let resultObj = {};
-  let result;
 
   // Keep computing until stack and queue
   // requirements are not valid
@@ -23,24 +22,23 @@ exports.processCalculation = (operandStack, operatorQueue) => {
 
       switch (operation) {
         case Addition:
-          result = operandOne + operandTwo;
-          operandStack.push(result);
+          resultObj.result = operandOne + operandTwo;
+          operandStack.push(resultObj.result);
           break;
         case Subtraction:
-          result = operandOne - operandTwo;
-          operandStack.push(result);
+          resultObj.result = operandOne - operandTwo;
+          operandStack.push(resultObj.result);
           break;
         case Multiplication:
-          result = operandOne * operandTwo;
-          operandStack.push(result);
+          resultObj.result = operandOne * operandTwo;
+          operandStack.push(resultObj.result);
           break;
         case Division:
-          result = operandOne / operandTwo;
-          operandStack.push(result);
+          resultObj.result = operandOne / operandTwo;
+          operandStack.push(resultObj.result);
           break;
       }
       // resultObj for calculator state management
-      resultObj.result = result;
       resultObj.operandStack = operandStack;
       resultObj.operatorQueue = operatorQueue;
       resultObj.validCalc = true;
