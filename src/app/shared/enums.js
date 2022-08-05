@@ -7,7 +7,7 @@ exports.Operator = {
 
 exports.CalcConstant = {
   MinOperandStackLength: 2,
-  MinOperatorStackLength: 1,
+  MinOperatorQueueLength: 1,
 };
 
 exports.CalcAppAction = {
