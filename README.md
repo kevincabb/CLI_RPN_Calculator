@@ -28,7 +28,7 @@ The way the application is currently implemented it can handle simple arithmetic
 
 RPN Calculator requires [Node.js](https://nodejs.org/) to run.
 
-Install the dependencies and start the server.
+Install the dependencies and start the application.
 
 ```sh
 npm install
