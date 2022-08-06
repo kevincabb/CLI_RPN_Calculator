@@ -22,7 +22,7 @@ When building out the application I actually written it in a single file at firs
 
 ## Edge cases / Improvements
 
-The way the application is currently implemented it can handle simple arithmetic operations, but I think there are some edge cases when it comes to processing inputs. If I had more time to develop, I think I would build out the input processing a bit more to be more effcient, for example if an input does not evaluate to a number it will be put in the operator queue. Since it won't evaluate to a currrent supported operator, it wouldn't effect the result but doing something simple to start like a RegEx helper function to evaulate appropriate inputs could be an option. 
+The way the application is currently implemented it can handle simple arithmetic operations, but I think there are some edge cases when it comes to processing inputs. If I had more time to develop, I think I would build out the input processing a bit more to be more efficient, for example if an input does not evaluate to a number it will be put in the operator queue. Since it won't evaluate to a currrent supported operator, it wouldn't effect the result but doing something simple to start like a RegEx helper function to evaulate appropriate inputs could be an option. 
 
 ## Installation
 
